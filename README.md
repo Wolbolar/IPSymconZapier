@@ -184,9 +184,9 @@ Das Modul in IP Symcon erwartet die Daten wie folgt:
 |_**URL**_                  | IP-Symcon Connect Adresse/hook/Zapier                                                       |
 |_**Payload Type**_         | form                                                                                        |
 |_**Data**_                 |                                                                                             |                                                                                          |
-|_username_                 | Username im IFTTT IO wird auch in der Testumgebung der Instanz angezeigt                    |
-|_password_                 | Passwort im IFTTT IO wird auch in der Testumgebung der Instanz angezeigt                    |
-|_objectid_                 | ObjektID der IFTTT Zapier Instanz die die Daten entgegen nehmen soll                        |
+|_username_                 | Username im Zapier IO wird auch in der Testumgebung der Instanz angezeigt                   |
+|_password_                 | Passwort im Zapier IO wird auch in der Testumgebung der Instanz angezeigt                   |
+|_objectid_                 | ObjektID der Zapier Instanz die die Daten entgegen nehmen soll                              |
 |_values_                   |{"value1":"value1string","value2":value2boolean,"value3":value3integer,"value4":value4float} |
 |_**Wrap Request In Array**_| no                                                            	                          |
 |_**Unflatten**_            | yes                                                                                         |
