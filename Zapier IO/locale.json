@@ -1,0 +1,13 @@
+{
+	"translations": {
+		"de": {
+			"Connection from Zapier to IP-Symcon":"Verbindung von Zapier to IP-Symcon",
+			"authentication for Zapier webhook":"Authentifizierung für den Zapier Webhook",
+			"username":"Benutzername",
+			"password":"Passwort",
+			"Creating instance.": "Die Instanz wird erstellt.",
+			"Interface closed.": "Interface geschlossen.",
+			"Zapier I/O created.": "Zapier I/O erstellt."			
+		}
+	}
+}

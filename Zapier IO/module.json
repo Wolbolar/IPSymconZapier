@@ -1,0 +1,11 @@
+{
+    "id": "{C60B0A79-8929-47AE-A37E-6A655FC8D56C}",
+    "name": "ZapierIO",
+    "type": 1,
+    "vendor": "Zapier",
+    "aliases": ["Zapier I/O"],
+    "parentRequirements": [],
+    "childRequirements": ["{050CF97D-F2AD-4DAB-9CDB-B5BD4543AED5}"],
+    "implemented": ["{210A0548-7205-4833-8EC7-F0A8BAF4F35D}"],
+    "prefix": "ZapierIO"
+}

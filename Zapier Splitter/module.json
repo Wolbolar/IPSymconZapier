@@ -1,0 +1,11 @@
+{
+    "id": "{78ECE377-1996-44A1-B4A2-183EF62C3610}",
+    "name": "ZapierSplitter",
+    "type": 2,
+    "vendor": "Zapier",
+    "aliases": ["Zapier Splitter"],
+    "parentRequirements": ["{210A0548-7205-4833-8EC7-F0A8BAF4F35D}"],
+    "childRequirements": ["{C988932F-EECF-47B7-9B58-E2490D6624CE}"],
+    "implemented": ["{050CF97D-F2AD-4DAB-9CDB-B5BD4543AED5}", "{1AF4FDAA-056F-4985-AE25-B4A2C742771F}"],
+    "prefix": "ZapierS"
+}

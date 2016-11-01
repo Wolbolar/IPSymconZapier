@@ -1,0 +1,11 @@
+{
+	"id": "{9796F830-CDF5-4634-9FE2-4A6FAE4AF393}",
+	"name": "Zapier",
+	"type": 3,
+	"vendor": "Zapier",
+	"aliases": ["Zapier"],
+	"parentRequirements": ["{1AF4FDAA-056F-4985-AE25-B4A2C742771F}"],
+	"childRequirements": [],
+	"implemented": ["{C988932F-EECF-47B7-9B58-E2490D6624CE}"],
+	"prefix": "Zapier"
+}
