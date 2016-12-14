@@ -133,22 +133,35 @@ class ZapierIO extends IPSModule
 	
 	protected function SetZapierInterface()
 		{
-			//prüfen ob Script existent
-				$SkriptID = @$this->GetIDForIdent("ZapierIPSInterface");
-				
+			$ipsversion = $this->GetIPSVersion();
+		if($ipsversion == 0 || $ipsversion == 1)
+			{
+				//prüfen ob Script existent
+				$SkriptID = @IPS_GetObjectIDByIdent("ZapierIPSInterface", $this->InstanceID);
 				if ($SkriptID === false)
 					{
 						$ID = $this->RegisterScript("ZapierIPSInterface", "Zapier IPS Interface", $this->CreateWebHookScript(), 4);
 						IPS_SetHidden($ID, true);
-						$this->RegisterHook('/hook/Zapier', $ID);
+						$this->RegisterHookOLD('/hook/Zapier', $ID);
 					}
 				else
 					{
 						//echo "Die Skript-ID lautet: ". $SkriptID;
 					}
+			}
+		else
+			{
+				$SkriptID = @IPS_GetObjectIDByIdent("ZapierIPSInterface", $this->InstanceID);
+				if ($SkriptID > 0)
+				{
+					$this->UnregisterHook("/hook/Zapier");
+					$this->UnregisterScript("ZapierIPSInterface");
+				}
+				$this->RegisterHook("/hook/Zapier");
+			}
 		}
 	
-	private function RegisterHook($WebHook, $TargetID)
+	private function RegisterHookOLD($WebHook, $TargetID)
 		{
 			$ids = IPS_GetInstanceListByModuleID("{015A6EB8-D6E5-4B93-B496-0D3F77AE9FE1}");
 			if (sizeof($ids) > 0)
@@ -173,12 +186,84 @@ class ZapierIO extends IPSModule
 				IPS_ApplyChanges($ids[0]);
 			}
 		}
+	
+	private function RegisterHook($WebHook)
+		{
+  			$ids = IPS_GetInstanceListByModuleID("{015A6EB8-D6E5-4B93-B496-0D3F77AE9FE1}");
+  			if(sizeof($ids) > 0)
+				{
+  				$hooks = json_decode(IPS_GetProperty($ids[0], "Hooks"), true);
+  				$found = false;
+  				foreach($hooks as $index => $hook)
+					{
+					if($hook['Hook'] == $WebHook)
+						{
+						if($hook['TargetID'] == $this->InstanceID)
+  							return;
+						$hooks[$index]['TargetID'] = $this->InstanceID;
+  						$found = true;
+						}
+					}
+  				if(!$found)
+					{
+ 					$hooks[] = Array("Hook" => $WebHook, "TargetID" => $this->InstanceID);
+					}
+  				IPS_SetProperty($ids[0], "Hooks", json_encode($hooks));
+  				IPS_ApplyChanges($ids[0]);
+				}
+  		}
 		
+	/**
+     * Löscht einen WebHook, wenn vorhanden.
+     *
+     * @access private
+     * @param string $WebHook URI des WebHook.
+     */
+    protected function UnregisterHook($WebHook)
+    {
+        $ids = IPS_GetInstanceListByModuleID("{015A6EB8-D6E5-4B93-B496-0D3F77AE9FE1}");
+        if (sizeof($ids) > 0)
+        {
+            $hooks = json_decode(IPS_GetProperty($ids[0], "Hooks"), true);
+            $found = false;
+            foreach ($hooks as $index => $hook)
+            {
+                if ($hook['Hook'] == $WebHook)
+                {
+                    $found = $index;
+                    break;
+                }
+            }
+            if ($found !== false)
+            {
+                array_splice($hooks, $index, 1);
+                IPS_SetProperty($ids[0], "Hooks", json_encode($hooks));
+                IPS_ApplyChanges($ids[0]);
+            }
+        }
+    }  
+	
+	/**
+     * Löscht eine Script, sofern vorhanden.
+     *
+     * @access private
+     * @param int $Ident Ident der Variable.
+     */
+    protected function UnregisterScript($Ident)
+    {
+        $sid = @IPS_GetObjectIDByIdent($Ident, $this->InstanceID);
+        if ($sid === false)
+            return;
+        if (!IPS_ScriptExists($sid))
+            return; //bail out
+        IPS_DeleteScript($sid, true);
+    } 
+	
 	private function CreateWebHookScript()
 		{
         $Script = '<?
 //Do not delete or modify.
-ZapierIO_ProcessHookData('.$this->InstanceID.');		
+ZapierIO_ProcessHookDataOLD('.$this->InstanceID.');		
 ?>';	
 		return $Script;
 		}	
@@ -188,7 +273,7 @@ ZapierIO_ProcessHookData('.$this->InstanceID.');
 		* Using the custom prefix this function will be callable from PHP and JSON-RPC 
 		*
 		*/
-		public function ProcessHookData()
+		public function ProcessHookDataOLD()
 		{
 			$webhookusername = $this->ReadPropertyString('username');
 			$webhookpassword = $this->ReadPropertyString('password');
@@ -244,6 +329,65 @@ ZapierIO_ProcessHookData('.$this->InstanceID.');
 					
 		}
 	
+	/**
+ 	* This function will be called by the hook control. Visibility should be protected!
+  	*/
+		
+	protected function ProcessHookData()
+	{
+					$webhookusername = $this->ReadPropertyString('username');
+			$webhookpassword = $this->ReadPropertyString('password');
+			/*
+			if(!isset($_SERVER['PHP_AUTH_USER']))
+			$_SERVER['PHP_AUTH_USER'] = "";
+			if(!isset($_SERVER['PHP_AUTH_PW']))
+				$_SERVER['PHP_AUTH_PW'] = "";
+			 
+			if(($_SERVER['PHP_AUTH_USER'] != $webhookusername) || ($_SERVER['PHP_AUTH_PW'] != $webhookpassword))
+				{
+				header('WWW-Authenticate: Basic Realm="Flow WebHook"');
+				header('HTTP/1.0 401 Unauthorized');
+				echo "Authorization required";
+				return;
+				}
+			echo "Webhook Zapier IP-Symcon 4";
+			*/
+			
+			//workaround for bug
+			if(!isset($_IPS))
+				global $_IPS;
+			if($_IPS['SENDER'] == "Execute")
+				{
+				echo "This script cannot be used this way.";
+				return;
+				} 
+			//Auswerten von Webhooks von Zapier
+			// Zapier nutzt POST und Connect IP 
+			
+			if (isset($_POST['username'])&&isset($_POST['password']))
+				{
+					$zapierusername = $_POST['username'];
+					$zapierpassword = $_POST['password'];
+					$objectid = $_POST['objectid'];
+					$values = $_POST['values'];
+					//Debug
+					$debug = false;
+					if ($debug)
+						IPS_LogMessage("Zapier I/O:", utf8_decode($values)." empfangen.");
+					$values = str_replace("False", "false", $values);
+					$values = json_decode($values); 
+					IPS_LogMessage("Zapier I/O:", "user: ".utf8_decode($zapierusername).", password: ".utf8_decode($zapierpassword)." empfangen.");
+					
+					if ($webhookusername == $zapierusername && $webhookpassword == $zapierpassword)
+					{
+						$payload = array ("objectid" => $objectid, "values" => $values);
+						$message = json_encode($payload);
+						IPS_LogMessage("Zapier I/O:", utf8_decode($message)." empfangen.");
+						$this->SendJSON($payload);
+					}	
+				}
+	}
+	
 	################## SEMAPHOREN Helper  - private
 
     private function lock($ident)
@@ -267,6 +411,26 @@ ZapierIO_ProcessHookData('.$this->InstanceID.');
           IPS_SemaphoreLeave("Zapier_" . (string) $this->InstanceID . (string) $ident);
     }
 	
+	protected function GetIPSVersion ()
+		{
+			$ipsversion = IPS_GetKernelVersion ( );
+			$ipsversion = explode( ".", $ipsversion);
+			$ipsmajor = intval($ipsversion[0]);
+			$ipsminor = intval($ipsversion[1]);
+			if($ipsminor < 10) // 4.0
+			{
+				$ipsversion = 0;
+			}
+			elseif ($ipsminor >= 10 && $ipsminor < 20) // 4.1
+			{
+				$ipsversion = 1;
+			}
+			else   // 4.2
+			{
+				$ipsversion = 2;
+			}
+			return $ipsversion;
+		}
 
 }
 
