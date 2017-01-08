@@ -1,5 +1,7 @@
 {
 	"id": "{9796F830-CDF5-4634-9FE2-4A6FAE4AF393}",
+	"title": "Zapier Instanz",
+	"description": "Instanz um Trigger an Zapier zu schicken oder Trigger von Zapier zu empfangen",
 	"name": "Zapier",
 	"type": 3,
 	"vendor": "Zapier",

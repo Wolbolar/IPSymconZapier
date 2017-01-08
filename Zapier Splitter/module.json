@@ -1,5 +1,7 @@
 {
     "id": "{78ECE377-1996-44A1-B4A2-183EF62C3610}",
+	"title": "Zapier Splitter Instanz",
+	"description": "Splitter Instanz Zapier",
     "name": "ZapierSplitter",
     "type": 2,
     "vendor": "Zapier",

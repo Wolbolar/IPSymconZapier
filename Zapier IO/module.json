@@ -1,5 +1,7 @@
 {
     "id": "{C60B0A79-8929-47AE-A37E-6A655FC8D56C}",
+	"title": "Microsoft Zapier I/O Instanz",
+	"description": "Webhook Instanz für Zapier",
     "name": "ZapierIO",
     "type": 1,
     "vendor": "Zapier",

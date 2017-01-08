@@ -134,7 +134,7 @@ class ZapierIO extends IPSModule
 	protected function SetZapierInterface()
 		{
 			$ipsversion = $this->GetIPSVersion();
-		if($ipsversion == 0 || $ipsversion == 1)
+		if($ipsversion == 0)
 			{
 				//prüfen ob Script existent
 				$SkriptID = @IPS_GetObjectIDByIdent("ZapierIPSInterface", $this->InstanceID);

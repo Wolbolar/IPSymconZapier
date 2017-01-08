@@ -1,9 +1,12 @@
 {
 	"id": "{85BA7F40-FA8D-44E6-BA5D-F4B0B611E530}",
+	"description": "Zapier Modul",
+	"tags": "Zapier",
+	"req_ips_version": "4.1",
 	"author": "Fonzo",
 	"name": "IPSymconZapier",
 	"url": "www.zapier.com",
-	"version": "0.1",
+	"version": "0.9",
 	"build": 0,
 	"date": 0
 }
