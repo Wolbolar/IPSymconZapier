@@ -26,15 +26,17 @@ class ZapierSplitter extends IPSModule
         IPS_SetHidden($this->GetIDForIdent('CommandOut'), true);
         IPS_SetHidden($this->GetIDForIdent('BufferIN'), true);
 		*/
-		$ParentID = $this->GetParent();
-		
 			
+		$this->SetStatus(102);
+		/*
+		$ParentID = $this->GetParent();
+					
 		// Wenn I/O verbunden ist
 		if ($this->HasActiveParent($ParentID))
 			{
 				//Instanz aktiv
 			}
-
+		*/
     }
 
 		/**
